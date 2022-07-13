@@ -1,0 +1,11 @@
+# Mac
+.DS_Store
+
+# Test
+*.test
+
+# Outputs
+*.out
+*.csv
+*.json
+*.yaml

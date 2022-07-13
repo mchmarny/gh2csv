@@ -1,0 +1,59 @@
+#!/bin/bash
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+set -o errexit
+set -o pipefail
+
+mkdir -p ./data
+
+# for each repo
+while read r; do
+
+    declare i=1
+    ## pages
+    for (( ; ; ))
+    do
+        echo "Getting pulls for ${GITHUB_ORG_NAME}/${r} - page: ${i}..."
+        curl -s \
+             -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
+             -H "Accept: application/vnd.github.v3+json" \
+             "${API_URL}/repos/${GITHUB_ORG_NAME}/${r}/pulls?state=all&per_page=100&page=${i}" \
+             --output ./data/pulls-${GITHUB_ORG_NAME}-${r}.json
+
+        # count records in the resulting file 
+        RECORD_COUNT=$(cat ./data/pulls-${GITHUB_ORG_NAME}-${r}.json | jq '. | length')
+        echo "Records: ${RECORD_COUNT}"
+
+        # break if there were no more records 
+        if [ $RECORD_COUNT -lt 1 ]
+        then
+            # remove the empty file
+            rm -f ./data/pulls-${GITHUB_ORG_NAME}-${r}.json
+            echo "Done"
+            break
+        fi
+
+        # extract the events
+        cat ./data/pulls-${GITHUB_ORG_NAME}-${r}.json | jq -r \
+            --arg org "$GITHUB_ORG_NAME" \
+            --arg repo "$r" \
+            '.[] | [.id, $org, $repo, .user.login, "pr", (.updated_at | .[0:10])] | @csv' \
+            >> /tmp/pulls-${GITHUB_ORG_NAME}.csv
+
+        # remove the temp file
+        rm -f ./data/pulls-${GITHUB_ORG_NAME}-${r}.json
+
+
+        ((i=i+1))
+    done # pages
+
+# repos 
+done <data/${GITHUB_ORG_NAME}.txt
+
+# import
+psql gh -c "COPY events FROM '/tmp/pulls-${GITHUB_ORG_NAME}.csv' delimiter ',' csv;"
+
+# cleanup 
+rm -r /tmp/pulls-${GITHUB_ORG_NAME}.csv
