@@ -1,0 +1,45 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+declare GITHUB_ORG_NAME=$1
+declare GITHUB_REPO_NAME=$2
+
+
+declare i=1
+## pages
+for (( ; ; ))
+do
+    echo "Getting PRs for '${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}' - page: ${i}..."
+    curl -s \
+         -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
+         -H "Accept: application/vnd.github.v3+json" \
+         "https://api.github.com/orgs/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/pulls?state=all&per_page=100&page=${i}" \
+         --output ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+
+    # count records in the resulting file 
+    RECORD_COUNT=$(cat ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq '. | length')
+    echo "Records: ${RECORD_COUNT}"
+
+    # break if there were no more records 
+    if [ $RECORD_COUNT -lt 1 ]
+    then
+        # remove the empty file
+        rm -f ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+        echo "Done"
+        break
+    fi
+
+    # extract the events
+    cat ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
+        --arg org "$GITHUB_ORG_NAME" \
+        --arg repo "$GITHUB_REPO_NAME" \
+        '.[] | [.id, $org, $repo, .user.login, "pr", (.updated_at | .[0:10])] | @csv' \
+        >> ./pr-${GITHUB_ORG_NAME}.csv
+
+    # remove the temp file
+    rm -f ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+
+    ((i=i+1))
+done # pages

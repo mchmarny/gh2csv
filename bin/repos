@@ -13,7 +13,7 @@ for (( ; ; ))
 do
      echo "Getting repos for ${GITHUB_ORG_NAME} - page: ${i}..."
      curl -s \
-          -H "Authorization: token ${GITHUB_TOKEN}" \
+          -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
           -H "Accept: application/vnd.github.v3+json" \
           "https://api.github.com/orgs/${GITHUB_ORG_NAME}/repos?type=public&per_page=100&page=${i}" \
           --output ./${GITHUB_ORG_NAME}.json
