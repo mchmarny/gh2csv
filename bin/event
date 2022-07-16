@@ -13,35 +13,35 @@ declare i=1
 ## pages
 for (( ; ; ))
 do
-    echo "Getting contributors for '${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}' - page: ${i}..."
+    echo "Getting events for '${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}' - page: ${i}..."
     curl -s \
          -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
          -H "Accept: application/vnd.github.v3+json" \
-         "https://api.github.com/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/contributors?per_page=100&page=${i}" \
-         --output ./contrib-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+         "https://api.github.com/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/events?per_page=100&page=${i}" \
+         --output ./event-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
 
     # check if the result is an array (github errors are not) 
-    VALID=$(cat ./contrib-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq 'if type=="array" then 1 else 0 end')
+    VALID=$(cat ./event-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq 'if type=="array" then 1 else 0 end')
     echo "Valid: ${VALID}"
 
     # break if there were no more records 
     if [ $VALID == "0" ]
     then
         # remove the empty file
-        rm -f ./contrib-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+        rm -f ./event-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
         echo "Done"
         break
     fi
 
     # extract the events
-    cat ./contrib-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
+    cat ./event-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
         --arg org "$GITHUB_ORG_NAME" \
         --arg repo "$GITHUB_REPO_NAME" \
-        '.[] | [.id, $repo, $org, .login, .site_admin, .contributions] | @csv' \
-        >> ./contrib-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
+        '.[] | [.id, $repo, $org, .actor.login, .type, .created_at] | @csv' \
+        >> ./event-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
 
     # remove the temp file
-    rm -f ./contrib-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+    rm -f ./event-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
 
     ((i=i+1))
 done # pages

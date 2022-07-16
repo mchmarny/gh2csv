@@ -29,7 +29,7 @@ export GITHUB_ACCESS_TOKEN="your-token-here"
 ### Org Repos 
 
 ```shell
-bin/repos org_name
+bin/repo org_name
 ```
 
 Outputs CSV file (repo-`org_name`.csv) containing: 

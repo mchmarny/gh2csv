@@ -18,12 +18,12 @@ do
           "https://api.github.com/orgs/${GITHUB_ORG_NAME}/repos?type=public&per_page=100&page=${i}" \
           --output ./repo-${GITHUB_ORG_NAME}.json
 
-     # count records in the resulting file 
-     RECORD_COUNT=$(cat ./repo-${GITHUB_ORG_NAME}.json | jq '. | length')
-     echo "Records: ${RECORD_COUNT}"
+     # check if the result is an array (github errors are not) 
+     VALID=$(cat ./repo-${GITHUB_ORG_NAME}.json | jq 'if type=="array" then 1 else 0 end')
+     echo "Valid: ${VALID}"
 
      # break if there were no more records 
-     if [ $RECORD_COUNT -lt 1 ]
+     if [ $VALID == "0" ]
      then
           # remove the empty file
           rm -f ./repo-${GITHUB_ORG_NAME}.json
@@ -32,9 +32,9 @@ do
      fi
 
      cat ./repo-${GITHUB_ORG_NAME}.json | jq -r \
-            --arg org "$GITHUB_ORG_NAME" \
-            '.[] | [.name, $org, .html_url, .homepage, .language, .license.key, (.updated_at | .[0:10]), .description] | @csv' \
-            >> ./repo-${GITHUB_ORG_NAME}.csv
+          --arg org "$GITHUB_ORG_NAME" \
+          '.[] | [.name, $org, .html_url, .homepage, .language, .license.key, (.updated_at | .[0:10]), .description] | @csv' \
+          >> ./repo-${GITHUB_ORG_NAME}.csv
 
      rm -f ./repo-${GITHUB_ORG_NAME}.json
 

@@ -20,12 +20,12 @@ do
             "https://api.github.com/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/issues/comments?state=all&per_page=100&page=${i}" \
             --output ./issuec-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
 
-    # count records in the resulting file 
-    RECORD_COUNT=$(cat ./issuec-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq '. | length')
-    echo "Records: ${RECORD_COUNT}"
+    # check if the result is an array (github errors are not) 
+    VALID=$(cat ./issuec-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq 'if type=="array" then 1 else 0 end')
+    echo "Valid: ${VALID}"
 
     # break if there were no more records 
-    if [ $RECORD_COUNT -lt 1 ]
+    if [ $VALID == "0" ]
     then
         # remove the empty file
         rm -f ./issuec-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
