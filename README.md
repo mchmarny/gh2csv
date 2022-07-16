@@ -5,6 +5,7 @@ Collection of scripts to export GitHub data into CSV
 * Repos in an Organization
 * PRs and PR Comments for a given Repo
 * Issues and Issues Comments for a given Repo
+* Contributors for a given Repo 
 
 > Note, the provided PR, PR Comments, Issues, and Issue Comments export only the basic events, you can alter the fields names to include additional data needed for your use-case. 
 
@@ -101,6 +102,21 @@ Outputs CSV file (issuec-`org_name`-`repo-name`.csv) containing:
 * `user` - username who made the issue comment 
 * `event` - name of the event (e.g. `issue-comment`)
 * `time` - ISO timestamp of the event
+
+### Contributors 
+
+```shell
+bin/contrib [org_name] [repo_name]
+```
+
+Outputs CSV file (contrib-`org_name`-`repo-name`.csv) containing: 
+
+* `id` - numeric identifier for that issue comment
+* `repo` - name of the repo 
+* `org` - organization name
+* `user` - username who made the issue comment 
+* `admin` - whether the user is a repo admin
+* `num` - number of contributions to this repo made by that user
 
 ## Disclaimer
 
