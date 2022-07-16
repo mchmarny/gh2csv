@@ -5,8 +5,8 @@ set -o pipefail
 
 declare GITHUB_ORG_NAME=$1
 
-# remove the org list of one exists from previous run 
-rm -f ./${GITHUB_ORG_NAME}.txt
+# remove the list if one exists from previous run 
+rm -f ./repo-${GITHUB_ORG_NAME}.txt
 
 declare i=1
 for (( ; ; ))
@@ -16,27 +16,27 @@ do
           -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
           -H "Accept: application/vnd.github.v3+json" \
           "https://api.github.com/orgs/${GITHUB_ORG_NAME}/repos?type=public&per_page=100&page=${i}" \
-          --output ./${GITHUB_ORG_NAME}.json
+          --output ./repo-${GITHUB_ORG_NAME}.json
 
      # count records in the resulting file 
-     RECORD_COUNT=$(cat ./${GITHUB_ORG_NAME}.json | jq '. | length')
+     RECORD_COUNT=$(cat ./repo-${GITHUB_ORG_NAME}.json | jq '. | length')
      echo "Records: ${RECORD_COUNT}"
 
      # break if there were no more records 
      if [ $RECORD_COUNT -lt 1 ]
      then
           # remove the empty file
-          rm -f ./${GITHUB_ORG_NAME}.json
+          rm -f ./repo-${GITHUB_ORG_NAME}.json
           echo "Done"
           break
      fi
 
-     cat ./${GITHUB_ORG_NAME}.json | jq -r \
+     cat ./repo-${GITHUB_ORG_NAME}.json | jq -r \
             --arg org "$GITHUB_ORG_NAME" \
             '.[] | [.name, $org, .html_url, .homepage, .language, .license.key, (.updated_at | .[0:10]), .description] | @csv' \
-            >> ./${GITHUB_ORG_NAME}.csv
+            >> ./repo-${GITHUB_ORG_NAME}.csv
 
-     rm -f ./${GITHUB_ORG_NAME}.json
+     rm -f ./repo-${GITHUB_ORG_NAME}.json
 
      ((i=i+1))
 done

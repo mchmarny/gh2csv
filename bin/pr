@@ -6,6 +6,8 @@ set -o pipefail
 declare GITHUB_ORG_NAME=$1
 declare GITHUB_REPO_NAME=$2
 
+# remove the list if one exists from previous run 
+rm -f ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
 
 declare i=1
 ## pages
@@ -15,7 +17,7 @@ do
     curl -s \
          -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
          -H "Accept: application/vnd.github.v3+json" \
-         "https://api.github.com/orgs/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/pulls?state=all&per_page=100&page=${i}" \
+         "https://api.github.com/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/pulls?state=all&per_page=100&page=${i}" \
          --output ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
 
     # count records in the resulting file 
@@ -35,8 +37,8 @@ do
     cat ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
         --arg org "$GITHUB_ORG_NAME" \
         --arg repo "$GITHUB_REPO_NAME" \
-        '.[] | [.id, $org, $repo, .user.login, "pr", (.updated_at | .[0:10])] | @csv' \
-        >> ./pr-${GITHUB_ORG_NAME}.csv
+        '.[] | [.id, $repo, $org, .user.login, "pr", .updated_at] | @csv' \
+        >> ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
 
     # remove the temp file
     rm -f ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
