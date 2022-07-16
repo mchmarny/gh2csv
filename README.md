@@ -1,4 +1,4 @@
-# gh-list
+# gh2csv
 
 Collection of scripts to export GitHub data into CSV
 
