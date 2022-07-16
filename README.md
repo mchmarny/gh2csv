@@ -2,9 +2,9 @@
 
 Collection of scripts to export GitHub data into CSV
 
-* org repos
-* PRs and PR Comments 
-* Issues and Issues Comments
+* Repos in an Organization
+* PRs and PR Comments for a given Repo
+* Issues and Issues Comments for a given Repo
 
 ## Prerequisites 
 
