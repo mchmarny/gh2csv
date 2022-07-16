@@ -6,6 +6,8 @@ Collection of scripts to export GitHub data into CSV
 * PRs and PR Comments for a given Repo
 * Issues and Issues Comments for a given Repo
 
+> Note, the provided PR, PR Comments, Issues, and Issue Comments export only the basic events, you can alter the fields names to include additional data needed for your use-case. 
+
 ## Prerequisites 
 
 * [Personal GitHub access token](https://github.com/settings/tokens) 
@@ -21,7 +23,7 @@ export GITHUB_ACCESS_TOKEN="your-token-here"
 
 ## Export
 
-> Note, the provided PR, PR Comments, Issues, and Issue Comments export only the basic events, you can alter the fields names to include additional data needed for your use-case. 
+> Each one of the below scripts uses paging to export all of the data from the inception of that repo. Depending on the size of your repo, that may take a while. You can experiment with the starting page number in each script to start with a more recent records. 
 
 ### Org Repos 
 
