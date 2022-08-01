@@ -21,7 +21,7 @@ do
             --output ./issue-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
 
     # check if the result is an array (github errors are not) 
-    VALID=$(cat ./issue-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq 'if type=="array" then 1 else 0 end')
+    VALID=$(cat ./issue-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq 'if type=="array" then length else 0 end')
     echo "Valid: ${VALID}"
 
     # break if there were no more records 
@@ -37,7 +37,7 @@ do
     cat ./issue-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
         --arg org "$GITHUB_ORG_NAME" \
         --arg repo "$GITHUB_REPO_NAME" \
-        '.[] | [.id, .number, .state, $repo, $org, .user.login, .assignee.login, .updated_at, .title, .html_url, .labels[].name] | @csv' \
+        '.[] | [.id, .number, .state, $repo, $org, .user.login, .assignee.login, .created_at, .updated_at, .merged_at, .closed_at, .title, .labels[].name] | @csv' \
         >> ./issue-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
 
     # remove the temp file

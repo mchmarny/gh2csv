@@ -61,7 +61,6 @@ Outputs CSV file (pr-`org_name`-`repo-name`.csv) containing:
 * `assignee` - username to whom this PR was assigned 
 * `time` - ISO timestamp of that PR event
 * `title` - PR tile at that time 
-* `url` - UI URL of this PR
 * `labels` - N-number of columns with one label per column 
 
 ### PR Comments 
@@ -73,11 +72,14 @@ bin/prc [org_name] [repo_name]
 Outputs CSV file (prc-`org_name`-`repo-name`.csv) containing: 
 
 * `id` - numeric identifier for that PR comment
+* `in_reply_to_id` - numeric identifier for the PR
+* `position` - order of the comment in the context of the PR
 * `repo` - name of the repo 
 * `org` - organization name
 * `user` - username who made the PR comment
 * `event` - name of the event (e.g. `pr-comment`)
-* `time` - ISO timestamp of the event
+* `created_at` - comment creation timestamp 
+* `updated_at` - comment update timestamp
 
 ### Issues 
 
