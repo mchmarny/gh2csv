@@ -37,7 +37,7 @@ do
     cat ./issue-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
         --arg org "$GITHUB_ORG_NAME" \
         --arg repo "$GITHUB_REPO_NAME" \
-        '.[] | [.id, $repo, $org, .user.login, "issue", .updated_at] | @csv' \
+        '.[] | [.id, .number, .state, $repo, $org, .user.login, .assignee.login, .updated_at, .title, .html_url, .labels[].name] | @csv' \
         >> ./issue-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
 
     # remove the temp file
