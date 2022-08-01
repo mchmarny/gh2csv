@@ -13,7 +13,7 @@ declare i=1
 ## pages
 for (( ; ; ))
 do
-    echo "Getting PR Comment for ${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME} - page: ${i}..."
+    echo "Getting PR Review Comment for ${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME} - page: ${i}..."
     curl -s \
         -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
         -H "Accept: application/vnd.github.v3+json" \
@@ -37,7 +37,7 @@ do
     cat ./prc-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
         --arg org "$GITHUB_ORG_NAME" \
         --arg repo "$GITHUB_REPO_NAME" \
-        '.[] | [.id, .in_reply_to_id, .position, $repo, $org, .user.login, .created_at, .updated_at] | @csv' \
+        '.[] | [.id, .pull_request_review_id, .in_reply_to_id, .position, $repo, $org, .user.login, .created_at, .updated_at] | @csv' \
         >> ./prc-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
 
     # remove the temp file
