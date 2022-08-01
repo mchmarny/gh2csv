@@ -53,11 +53,16 @@ bin/pr [org_name] [repo_name]
 Outputs CSV file (pr-`org_name`-`repo-name`.csv) containing: 
 
 * `id` - numeric identifier for that PR
+* `number` - sequential number of that PR
+* `state` - current state fo that PR (open, closed)
 * `repo` - name of the repo 
 * `org` - organization name
 * `user` - username who submitted the PR
-* `event` - name of the event (e.g. `pr`)
-* `time` - ISO timestamp of the event
+* `assignee` - username to whom this PR was assigned 
+* `time` - ISO timestamp of that PR event
+* `title` - PR tile at that time 
+* `url` - UI URL of this PR
+* `labels` - N-number of columns with one label per column 
 
 ### PR Comments 
 
