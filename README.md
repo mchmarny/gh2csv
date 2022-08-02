@@ -33,6 +33,8 @@ export GITHUB_ACCESS_TOKEN="your-token-here"
 bin/repo org_name
 ```
 
+https://docs.github.com/en/rest/repos/repos
+
 Outputs CSV file (repo-`org_name`.csv) containing: 
 
 * `repo` - name of the repo 
@@ -49,6 +51,8 @@ Outputs CSV file (repo-`org_name`.csv) containing:
 ```shell
 bin/pr [org_name] [repo_name]
 ```
+
+https://docs.github.com/en/rest/pulls/pulls
 
 Outputs CSV file (pr-`org_name`-`repo-name`.csv) containing: 
 
@@ -69,6 +73,8 @@ Outputs CSV file (pr-`org_name`-`repo-name`.csv) containing:
 bin/prc [org_name] [repo_name]
 ```
 
+https://docs.github.com/en/rest/pulls/comments#list-review-comments-in-a-repository
+
 Outputs CSV file (prc-`org_name`-`repo-name`.csv) containing: 
 
 * `id` - numeric identifier for that PR comment
@@ -87,6 +93,8 @@ Outputs CSV file (prc-`org_name`-`repo-name`.csv) containing:
 bin/issue [org_name] [repo_name]
 ```
 
+https://docs.github.com/en/rest/issues/issues#list-repository-issues
+
 Outputs CSV file (issue-`org_name`-`repo-name`.csv) containing: 
 
 * `id` - numeric identifier for that issue
@@ -101,6 +109,8 @@ Outputs CSV file (issue-`org_name`-`repo-name`.csv) containing:
 ```shell
 bin/issuec [org_name] [repo_name]
 ```
+
+https://docs.github.com/en/rest/issues/comments#list-issue-comments-for-a-repository
 
 Outputs CSV file (issuec-`org_name`-`repo-name`.csv) containing: 
 
@@ -117,6 +127,8 @@ Outputs CSV file (issuec-`org_name`-`repo-name`.csv) containing:
 bin/contrib [org_name] [repo_name]
 ```
 
+https://docs.github.com/en/rest/repos/repos#list-repository-contributors
+
 Outputs CSV file (contrib-`org_name`-`repo-name`.csv) containing: 
 
 * `id` - numeric identifier for that issue comment
@@ -131,8 +143,11 @@ Outputs CSV file (contrib-`org_name`-`repo-name`.csv) containing:
 > Note: Only events created within the past 90 days will be included in timelines.
 
 ```shell
-bin/event [org_name] [repo_name]
+bin/event 
+[org_name] [repo_name]
 ```
+
+https://docs.github.com/en/rest/activity/events
 
 Outputs CSV file (event-`org_name`-`repo-name`.csv) containing: 
 
