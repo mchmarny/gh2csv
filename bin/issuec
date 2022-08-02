@@ -33,11 +33,11 @@ do
         break
     fi
 
-    # extract the events
+    # extract the events // {item} + (.url / "/" | {number: .[-2], room: .[-1]})
     cat ./issuec-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
         --arg org "$GITHUB_ORG_NAME" \
         --arg repo "$GITHUB_REPO_NAME" \
-        '.[] | [.id, $org, $repo, .user.login, "issue-comment", (.updated_at | .[0:10])] | @csv' \
+        '.[] | [.id, (.issue_url / "/" | .[7]), $org, $repo, .user.login, .updated_at, .author_association ] | @csv' \
         >> ./issuec-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
 
     # remove the temp file
