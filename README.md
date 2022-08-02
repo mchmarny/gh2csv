@@ -67,6 +67,18 @@ Outputs CSV file (pr-`org_name`-`repo-name`.csv) containing:
 * `title` - PR tile at that time 
 * `labels` - N-number of columns with one label per column 
 
+The `pr` command also exports PR Reviews for each one of the PRs into CSV file (prr-`org_name`-`repo-name`.csv) containing: 
+
+* `id` - numeric identifier for that PR review 
+* `number` - number of the PR
+* `state` - current state fo that PR review
+* `repo` - name of the repo 
+* `org` - organization name
+* `user` - username who submitted the PR
+* `time` - ISO timestamp of that PR review
+* `association` - author association (CONTRIBUTOR, MEMBER etc) 
+
+
 ### PR Comments 
 
 ```shell

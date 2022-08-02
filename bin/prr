@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+declare GITHUB_ORG_NAME=$1
+declare GITHUB_REPO_NAME=$2
+declare GITHUB_REPO_PR=$3
+
+declare i=1
+## pages
+for (( ; ; ))
+do
+    echo "Getting PR Reviews for '${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/${GITHUB_REPO_PR}' - page: ${i}..."
+    curl -s \
+         -H "Authorization: token ${GITHUB_ACCESS_TOKEN}" \
+         -H "Accept: application/vnd.github.v3+json" \
+         "https://api.github.com/repos/${GITHUB_ORG_NAME}/${GITHUB_REPO_NAME}/pulls/${GITHUB_REPO_PR}/reviews?per_page=100&page=${i}" \
+         --output ./prr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+
+    # check if the result is an array (github errors are not) 
+    VALID=$(cat ./prr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq 'if type=="array" then length else 0 end')
+    echo "Valid: ${VALID}"
+
+    # break if there were no more records 
+    if [ $VALID == "0" ]
+    then
+        # remove the empty file
+        rm -f ./prr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+        echo "Done"
+        break
+    fi
+
+    # extract the events
+    cat ./prr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r \
+        --arg org "$GITHUB_ORG_NAME" \
+        --arg repo "$GITHUB_REPO_NAME" \
+        --arg pr "$GITHUB_REPO_PR" \
+        '.[] | [.id, $pr, .state, $repo, $org, .user.login, .submitted_at, .author_association ] | @csv' \
+        >> ./prr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
+
+    # remove the temp file
+    rm -f ./prr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
+
+    ((i=i+1))
+done # pages

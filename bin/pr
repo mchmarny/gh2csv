@@ -8,6 +8,7 @@ declare GITHUB_REPO_NAME=$2
 
 # remove the list if one exists from previous run 
 rm -f ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
+rm -f ./prr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
 
 declare i=1
 ## pages
@@ -39,6 +40,12 @@ do
         --arg repo "$GITHUB_REPO_NAME" \
         '.[] | [.id, .number, .state, $repo, $org, .user.login, .created_at, .updated_at, .merged_at, .closed_at, .title, (.labels  | map(.name) | join(",")) ] | @csv' \
         >> ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.csv
+
+    # extract the PR numbers and get the reviews for that PR
+    cat ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json | jq -r '.[] | [ .number ] | @tsv' |      
+    while IFS=$'\t' read -r pr; do
+        bin/prr $GITHUB_ORG_NAME $GITHUB_REPO_NAME "$pr"
+    done
 
     # remove the temp file
     rm -f ./pr-${GITHUB_ORG_NAME}-${GITHUB_REPO_NAME}.json
