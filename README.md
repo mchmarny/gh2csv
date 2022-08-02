@@ -115,11 +115,13 @@ https://docs.github.com/en/rest/issues/comments#list-issue-comments-for-a-reposi
 Outputs CSV file (issuec-`org_name`-`repo-name`.csv) containing: 
 
 * `id` - numeric identifier for that issue comment
+* `number` - number of the issues 
 * `repo` - name of the repo 
 * `org` - organization name
 * `user` - username who made the issue comment 
 * `event` - name of the event (e.g. `issue-comment`)
 * `time` - ISO timestamp of the event
+* `association` - comment author association (role)
 
 ### Contributors 
 
