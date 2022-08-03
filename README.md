@@ -62,22 +62,25 @@ Outputs CSV file (pr-`org_name`-`repo-name`.csv) containing:
 * `repo` - name of the repo 
 * `org` - organization name
 * `user` - username who submitted the PR
-* `assignee` - username to whom this PR was assigned 
-* `time` - ISO timestamp of that PR event
+* `created` - ISO timestamp of when the PR was created
+* `updated` - ISO timestamp of when the PR was updated
+* `merged` - ISO timestamp of when the PR was merged
+* `closed` - ISO timestamp of when the PR was closed
 * `title` - PR tile at that time 
-* `labels` - N-number of columns with one label per column 
+* `labels` - Comma-separated list of labels
 
 The `pr` command also exports PR Reviews for each one of the PRs into CSV file (prr-`org_name`-`repo-name`.csv) containing: 
+
+https://docs.github.com/en/rest/pulls/reviews#list-reviews-for-a-pull-request
 
 * `id` - numeric identifier for that PR review 
 * `number` - number of the PR
 * `state` - current state fo that PR review
 * `repo` - name of the repo 
 * `org` - organization name
-* `user` - username who submitted the PR
-* `time` - ISO timestamp of that PR review
+* `user` - username who submitted the PR review
+* `submitted` - ISO timestamp of that PR review
 * `association` - author association (CONTRIBUTOR, MEMBER etc) 
-
 
 ### PR Comments 
 
@@ -90,12 +93,14 @@ https://docs.github.com/en/rest/pulls/comments#list-review-comments-in-a-reposit
 Outputs CSV file (prc-`org_name`-`repo-name`.csv) containing: 
 
 * `id` - numeric identifier for that PR comment
+* `number` - number of the PR
+* `review_id` - request review ID
 * `in_reply_to_id` - numeric identifier for the PR
 * `position` - order of the comment in the context of the PR
 * `repo` - name of the repo 
 * `org` - organization name
-* `user` - username who made the PR comment
-* `event` - name of the event (e.g. `pr-comment`)
+* `author` - username who made the PR comment
+* `association` - author association (CONTRIBUTOR, MEMBER etc) 
 * `created_at` - comment creation timestamp 
 * `updated_at` - comment update timestamp
 
@@ -110,11 +115,16 @@ https://docs.github.com/en/rest/issues/issues#list-repository-issues
 Outputs CSV file (issue-`org_name`-`repo-name`.csv) containing: 
 
 * `id` - numeric identifier for that issue
+* `number` - number of the issue
+* `state` - current state fo that PR review
 * `repo` - name of the repo 
 * `org` - organization name
-* `user` - username who made the issue
-* `event` - name of the event (e.g. `issue`)
-* `time` - ISO timestamp of the event
+* `author` - username who created the issue
+* `created` - ISO timestamp of when the issue was created
+* `closed` - ISO timestamp of when the issue was closed
+* `title` - PR tile at that time 
+* `labels` - Comma-separated list of labels
+
 
 ### Issue Comments 
 
@@ -130,9 +140,8 @@ Outputs CSV file (issuec-`org_name`-`repo-name`.csv) containing:
 * `number` - number of the issues 
 * `repo` - name of the repo 
 * `org` - organization name
-* `user` - username who made the issue comment 
-* `event` - name of the event (e.g. `issue-comment`)
-* `time` - ISO timestamp of the event
+* `author` - username who made the issue comment 
+* `updated` - ISO timestamp of the issue comment was last updated
 * `association` - comment author association (role)
 
 ### Contributors 
